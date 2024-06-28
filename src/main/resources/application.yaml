@@ -1,0 +1,30 @@
+spring:
+  main:
+    allow-bean-definition-overriding: true
+  application:
+    name: demo-search
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demodb
+    username: user
+    password: pass
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+logging:
+  config: classpath:log4j2.xml
+  level:
+    root: INFO
+    com.demo.search: DEBUG
+
+server:
+  port:
+  servlet:
+    context-path: /demo
+  error:
+    whitelabel:
+      enabled: true
+    include-stacktrace: always

@@ -1,0 +1,109 @@
+openapi: 3.0.0
+info:
+  title: Customer API
+  version: 1.0.0
+
+paths:
+  /customers:
+    get:
+      summary: List all customers
+      operationId: listCustomers
+      responses:
+        '200':
+          description: A list of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+  /customers/searchByFirstName:
+    get:
+      summary: Search customers by first name
+      operationId: searchCustomersByFirstName
+      parameters:
+        - name: firstName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of customers with the given first name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '404':
+            description: A user with the specified ID was not found.
+        '503':
+            description: Unexpected error.
+
+  /customers/searchByLastName:
+    get:
+      summary: Search customers by last name
+      operationId: searchCustomersByLastName
+      parameters:
+        - name: lastName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of customers with the given last name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '404':
+          description: A user with the specified ID was not found.
+        '503':
+          description: Unexpected error.
+  /customers/searchByCompanyName:
+    get:
+      summary: Search customers by last name
+      operationId: searchCustomersByCompanyName
+      parameters:
+        - name: companyName
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: A list of customers with the given company name
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Customer'
+        '404':
+          description: A user with the specified ID was not found.
+        '503':
+          description: Unexpected error.
+
+components:
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: integer
+        firstName:
+          type: string
+          maxLength: 50
+          minLength: 1
+        lastName:
+          type: string
+          maxLength: 50
+          minLength: 1
+        companyName:
+          type: string
+          maxLength: 50
+          minLength: 1
