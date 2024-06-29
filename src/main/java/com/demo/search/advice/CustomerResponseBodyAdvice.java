@@ -26,11 +26,11 @@ public class CustomerResponseBodyAdvice implements ResponseBodyAdvice<Object> {
     public Object beforeBodyWrite(Object body, MethodParameter returnType, MediaType selectedContentType, Class<? extends HttpMessageConverter<?>> selectedConverterType, org.springframework.http.server.ServerHttpRequest request, org.springframework.http.server.ServerHttpResponse response) {
         if (body instanceof List) {
             List<?> bodyList = (List<?>) body;
-            try{
+            try {
                 if (!bodyList.isEmpty() && bodyList.get(0) instanceof Customer) {
                     return ResponseEntity.ok(bodyList);
                 }
-            }catch(Exception e){
+            } catch (Exception e) {
 
             }
         }

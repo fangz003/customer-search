@@ -2,15 +2,15 @@ package com.demo.search.dao;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Data;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
  * Entity class for Customer.
  */
 @Entity
-@Table (name = "Customer")
+@Table(name = "Customer")
 @Data
 @Builder
 @NoArgsConstructor
@@ -19,7 +19,7 @@ public class CustomerDao {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
@@ -27,6 +27,7 @@ public class CustomerDao {
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
-    @Column(name = "company_name", nullable = false, length = 60)
-    private String companyName;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private CompanyDao company;
 }

@@ -6,10 +6,9 @@ import java.util.List;
 
 public interface CustomerSearchService {
 
-    List<Customer> findByFirstName(final String firstName);
+    List<Customer> findByFirstName(final String firstName, String sortField, String sortDirection);
 
-    List<Customer> findByLastName(final String firstName);
+    List<Customer> findByLastName(final String firstName, String sortField, String sortDirection);
 
-    List<Customer> findByCompanyName(final String companyName);
-
+    List<Customer> findByCompanyId(final Integer companyId, String sortField, String sortDirection);
 }

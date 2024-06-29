@@ -1,12 +1,13 @@
 package com.demo.search.service.impl;
 
-
 import com.demo.search.dao.CustomerDao;
 import com.demo.search.mapper.CustomerMapper;
 import com.demo.search.model.Customer;
 import com.demo.search.repository.CustomerRepository;
 import com.demo.search.service.CustomerSearchService;
+import io.micrometer.common.util.StringUtils;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,19 +19,53 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
     private final CustomerRepository customerRepository;
     private final CustomerMapper customerMapper;
 
-    public List<Customer> findByFirstName(final String firstName){
-        List<CustomerDao> customerDaos = customerRepository.findByFirstName(firstName);
-        return null;
+    /**
+     * Find customer by first name
+     *
+     * @param firstName
+     * @param sortField
+     * @param sortDirection asc or desc
+     * @return
+     */
+    public List<Customer> findByFirstName(final String firstName, final String sortField, final String sortDirection) {
+        Sort sort = getSort(sortField, sortDirection);
+        List<CustomerDao> customerDaos = customerRepository.findByFirstName(firstName, sort);
+        return customerMapper.toDtos(customerDaos);
     }
 
-    public List<Customer> findByLastName(final String lastName){
-        List<CustomerDao> customerDaos = customerRepository.findByFirstName(lastName);
-        return null;
+    /**
+     * Find customer by last name
+     *
+     * @param lastName
+     * @param sortField
+     * @param sortDirection asc or desc
+     * @return
+     */
+    public List<Customer> findByLastName(final String lastName, final String sortField, final String sortDirection) {
+        Sort sort = getSort(sortField, sortDirection);
+        List<CustomerDao> customerDaos = customerRepository.findByLastName(lastName, sort);
+        return customerMapper.toDtos(customerDaos);
     }
 
-    public List<Customer> findByCompanyName(final String companyName){
-        List<CustomerDao> customerDaos = customerRepository.findByFirstName(companyName);
-        return null;
+    /**
+     * Find customer by company ID
+     *
+     * @param companyId
+     * @param sortField
+     * @param sortDirection asc or desc
+     * @return
+     */
+    public List<Customer> findByCompanyId(final Integer companyId, final String sortField, final String sortDirection) {
+        Sort sort = getSort(sortField, sortDirection);
+        List<CustomerDao> customerDaos = customerRepository.findByCompanyId(companyId, sort);
+        return customerMapper.toDtos(customerDaos);
+    }
+
+    private Sort getSort(String sortField, String sortDirection) {
+        if (StringUtils.isEmpty(sortField)) {
+            return Sort.unsorted();
+        }
+        return Sort.by(Sort.Direction.fromString(sortDirection), sortField);
     }
 
 }

@@ -1,0 +1,37 @@
+{
+  "info": {
+    "_postman_id": "fc607d9a-8bdd-46ef-a63a-6d952685be8d",
+    "name": "Demo Search",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "36612846"
+  },
+  "item": [
+    {
+      "name": "SearchByFirstName",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://{hostname}:{port}/{context}/customers/searchByFirstName?firstName=Beth",
+          "protocol": "http",
+          "host": [
+            "{hostname}"
+          ],
+          "port": "{port}",
+          "path": [
+            "{context}",
+            "customers",
+            "searchByFirstName"
+          ],
+          "query": [
+            {
+              "key": "firstName",
+              "value": "Beth"
+            }
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
