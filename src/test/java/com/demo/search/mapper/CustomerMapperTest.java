@@ -1,23 +1,35 @@
 package com.demo.search.mapper;
 
+import com.demo.search.dao.CompanyDao;
 import com.demo.search.dao.CustomerDao;
+import com.demo.search.model.Company;
 import com.demo.search.model.Customer;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+
+@ExtendWith(SpringExtension.class) // JUnit 5
+@ContextConfiguration(classes = {
+        CustomerMapperImpl.class,
+        CompanyMapperImpl.class
+})
 public class CustomerMapperTest {
 
-    private CustomerMapper customerMapper;
+    private CustomerMapper customerMapper = null;
 
+    private CompanyMapper companyMapper = Mappers.getMapper(CompanyMapper.class);
     @BeforeEach
     public void setUp() {
-        customerMapper = Mappers.getMapper(CustomerMapper.class);
+        customerMapper = new CustomerMapperImpl(companyMapper);
     }
 
     @Test

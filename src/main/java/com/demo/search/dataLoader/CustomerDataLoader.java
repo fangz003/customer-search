@@ -28,7 +28,6 @@ public class CustomerDataLoader implements CommandLineRunner {
 
     private final CustomerRepository customerRepository;
     private final CompanyRepository companyRepository;
-
     public final static int DATA_SET_SiZE = 500;
 
     @Override
@@ -36,19 +35,33 @@ public class CustomerDataLoader implements CommandLineRunner {
     public void run(String... args) throws Exception {
         Faker faker = new Faker();
         faker.expression("[A-Za-z]+");
-        List<CustomerDao> customerDaos = new ArrayList<>();
 
         logger.info("Start to load customer data with fake data");
-        if (customerRepository.count() > 0) {
-            return;
-        }
+        cleanUpData();
+        List<CompanyDao> companyDaosPersisted = createCompanyData(faker);
+        createCustomerData(faker, companyDaosPersisted);
 
-        //Generate 500 fake customers in DB.
+        final var size = customerRepository.count();
+        logger.info(String.format("{0} customers have been loaded to customer table", size));
+    }
+
+    private List<CompanyDao> createCompanyData(Faker faker) {
+        List<CompanyDao> companyDaos = new ArrayList<>();
+        for (int j = 0; j < 8; j++) {
+            companyDaos.add(CompanyDao.builder()
+                    .name(faker.company().name())
+                    .build());
+        }
+        return companyRepository.saveAll(companyDaos);
+    }
+
+    private List<CustomerDao> createCustomerData(Faker faker, List<CompanyDao> companyDaosPersisted){//Generate 500 fake customers in DB.
+        List<CustomerDao> customerDaos = new ArrayList<>();
+
         int i = 0;
         String firstName = null;
         String lastName = null;
 
-        List<CompanyDao> companyDaosPersisted = createCompanyData();
         Random random = new Random();
 
         while (i < DATA_SET_SiZE) {
@@ -69,21 +82,12 @@ public class CustomerDataLoader implements CommandLineRunner {
             i++;
         }
 
-        customerRepository.saveAll(customerDaos);
-
-        final var size = customerRepository.count();
-        logger.info(String.format("{0} customers have been loaded to customer table", size));
+        return customerRepository.saveAll(customerDaos);
     }
 
-    private List<CompanyDao> createCompanyData() {
-        Faker faker = new Faker();
-        List<CompanyDao> companyDaos = new ArrayList<>();
-        for (int j = 0; j < 8; j++) {
-            companyDaos.add(CompanyDao.builder()
-                    .name(faker.company().name())
-                    .build());
-        }
-        return companyRepository.saveAll(companyDaos);
+    private void cleanUpData(){
+        customerRepository.deleteAll();;
+        companyRepository.deleteAll();;
     }
 
 }

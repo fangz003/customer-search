@@ -2,6 +2,7 @@ package com.demo.search.mapper;
 
 import com.demo.search.dao.CustomerDao;
 import com.demo.search.model.Customer;
+import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 
@@ -10,7 +11,9 @@ import java.util.List;
 /**
  * CustomerMapper uses MapStruct to convert between CustomerDao and Customer (dto class)
  */
-@Mapper(componentModel = "spring", uses = {CompanyMapper.class})
+@Mapper(componentModel = "spring",
+        injectionStrategy = InjectionStrategy.CONSTRUCTOR,
+        uses = {CompanyMapper.class})
 public interface CustomerMapper {
     CustomerMapper INSTANCE = Mappers.getMapper(CustomerMapper.class);
 

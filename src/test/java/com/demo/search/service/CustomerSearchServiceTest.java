@@ -1,17 +1,17 @@
 package com.demo.search.service;
 
+import com.demo.search.dao.CompanyDao;
 import com.demo.search.dao.CustomerDao;
-import com.demo.search.mapper.CustomerMapper;
+import com.demo.search.mapper.CompanyMapper;
+import com.demo.search.mapper.CustomerMapperImpl;
 import com.demo.search.model.Customer;
 import com.demo.search.repository.CustomerRepository;
 import com.demo.search.service.impl.CustomerSearchServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mapstruct.factory.Mappers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import org.mockito.Spy;
 import org.springframework.data.domain.Sort;
 
 import java.util.Arrays;
@@ -22,40 +22,28 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
 public class CustomerSearchServiceTest {
-
     @Mock
     private CustomerRepository customerRepository;
 
-    @Spy
-    private final CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
+    @Mock
+    private CompanyMapper companyMapper;
 
     @InjectMocks
-    private CustomerSearchServiceImpl customerSearchService;
+    private CustomerMapperImpl customerMapper;
+
+    private CustomerSearchService customerSearchService;
 
     private List<CustomerDao> customers;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
-
-        CustomerDao customer1 = new CustomerDao();
-        customer1.setFirstName("John");
-        customer1.setLastName("Doe");
-        customer1.setCompanyId(1);
-        customer1.setCompanyName("CompanyA");
-
-        CustomerDao customer2 = new CustomerDao();
-        customer2.setFirstName("Jane");
-        customer2.setLastName("Doe");
-        customer2.setCompanyId(1);
-        customer2.setCompanyName("CompanyA");
-
-        customers = Arrays.asList(customer1, customer2);
+        customerSearchService = new CustomerSearchServiceImpl(customerRepository, customerMapper);
+        customers = createCustomerDaos();
     }
 
     @Test
     void testGetCustomersByCompanyIdSorted() {
-        // given
         given(customerRepository.findByCompanyId(anyInt(), any(Sort.class))).willReturn(customers);
 
         // when
@@ -66,7 +54,6 @@ public class CustomerSearchServiceTest {
         assertEquals("John", result.get(0).getFirstName());
         assertEquals("Jane", result.get(1).getFirstName());
     }
-
     @Test
     void testGetCustomersByFirstNameSorted() {
 
@@ -86,9 +73,10 @@ public class CustomerSearchServiceTest {
     @Test
     void testGetCustomersByLastNameSorted() {
 
-        final var lastName = "John";
         // given
-        given(customerRepository.findByLastName(anyString(), any(Sort.class))).willReturn(List.of(customers.get(1)));
+        List<CustomerDao> customerDaos = customers.subList(1,2);
+
+        given(customerRepository.findByLastName(anyString(), any(Sort.class))).willReturn(customerDaos);
 
         // when
         List<Customer> result = customerSearchService.findByLastName(anyString(), anyString(), "asc");
@@ -97,6 +85,25 @@ public class CustomerSearchServiceTest {
         assertEquals(1, result.size());
         assertEquals("Jane", result.get(0).getFirstName());
         assertEquals("Doe", result.get(0).getLastName());
+    }
+
+    private List<CustomerDao> createCustomerDaos(){
+
+        CompanyDao companyDao = CompanyDao.builder().id(1).name("CompanyA").build();
+
+        CustomerDao customer1 = CustomerDao.builder()
+                .firstName("John")
+                .lastName("Doe")
+                .company(companyDao)
+                .build();
+
+        CustomerDao customer2 = CustomerDao.builder()
+                .firstName("Jane")
+                .lastName("Doe")
+                .company(companyDao)
+                .build();
+
+        return  Arrays.asList(customer1, customer2);
     }
 }
 

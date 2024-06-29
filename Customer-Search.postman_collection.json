@@ -1,37 +1,162 @@
 {
-  "info": {
-    "_postman_id": "fc607d9a-8bdd-46ef-a63a-6d952685be8d",
-    "name": "Demo Search",
-    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-    "_exporter_id": "36612846"
-  },
-  "item": [
-    {
-      "name": "SearchByFirstName",
-      "request": {
-        "method": "GET",
-        "header": [],
-        "url": {
-          "raw": "http://{hostname}:{port}/{context}/customers/searchByFirstName?firstName=Beth",
-          "protocol": "http",
-          "host": [
-            "{hostname}"
-          ],
-          "port": "{port}",
-          "path": [
-            "{context}",
-            "customers",
-            "searchByFirstName"
-          ],
-          "query": [
-            {
-              "key": "firstName",
-              "value": "Beth"
-            }
-          ]
-        }
-      },
-      "response": []
-    }
-  ]
+	"info": {
+		"_postman_id": "fc607d9a-8bdd-46ef-a63a-6d952685be8d",
+		"name": "Customer Search",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36612846"
+	},
+	"item": [
+		{
+			"name": "SearchByFirstNameWithoutSortField",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{context}}/customers/search/searchByFirstName?firstName=Ignacio",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{context}}",
+						"customers",
+						"search",
+						"searchByFirstName"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Ignacio"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchByFirstNameSortByLastName",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{context}}/customers/searchByFirstName?firstName=Ignacio",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{context}}",
+						"customers",
+						"searchByFirstName"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Ignacio"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchByFirstNameSortByCompanyId",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{hostname}:{port}/{context}/customers/searchByFirstName?firstName=Beth",
+					"protocol": "http",
+					"host": [
+						"{hostname}"
+					],
+					"port": "{port}",
+					"path": [
+						"{context}",
+						"customers",
+						"searchByFirstName"
+					],
+					"query": [
+						{
+							"key": "firstName",
+							"value": "Beth"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchByCompanyIdSortByFirstNameASC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{context}}/customers/searchByCompanyId?companyId=52&sortDirection=asc&sortField=firstName",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{context}}",
+						"customers",
+						"searchByCompanyId"
+					],
+					"query": [
+						{
+							"key": "companyId",
+							"value": "52"
+						},
+						{
+							"key": "sortDirection",
+							"value": "asc"
+						},
+						{
+							"key": "sortField",
+							"value": "firstName"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "SearchByLastNameSortByCompanyIdASC",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{hostname}}:{{port}}/{{context}}/customers/searchByLastName?lastName=Gislason&sortDirection=asc&sortField=companyId",
+					"protocol": "http",
+					"host": [
+						"{{hostname}}"
+					],
+					"port": "{{port}}",
+					"path": [
+						"{{context}}",
+						"customers",
+						"searchByLastName"
+					],
+					"query": [
+						{
+							"key": "lastName",
+							"value": "Gislason"
+						},
+						{
+							"key": "sortDirection",
+							"value": "asc"
+						},
+						{
+							"key": "sortField",
+							"value": "companyId"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
 }

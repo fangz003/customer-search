@@ -1,9 +1,14 @@
 package com.demo.search.controller;
 
+import com.demo.search.dao.CompanyDao;
 import com.demo.search.dao.CustomerDao;
+import com.demo.search.mapper.CompanyMapper;
 import com.demo.search.mapper.CustomerMapper;
+import com.demo.search.mapper.CustomerMapperImpl;
 import com.demo.search.model.Customer;
+import com.demo.search.repository.CompanyRepository;
 import com.demo.search.repository.CustomerRepository;
+import com.github.javafaker.Faker;
 import com.google.gson.Gson;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +20,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -31,19 +37,29 @@ class CustomerSearchControllerIT {
     @Autowired
     private CustomerRepository customerRepository;
 
-    private final CustomerMapper customerMapper = Mappers.getMapper(CustomerMapper.class);
+    @Autowired
+    private CompanyRepository companyRepository;
 
+    @Autowired
+    private CustomerMapper customerMapper;
 
     @BeforeEach
     void setUp() {
         customerRepository.deleteAll();
-        CustomerDao customer1 = createCustomerDao("Adam", "Doe", 1, "CompanyA");
-        CustomerDao customer2 = createCustomerDao("John", "Doe", 1, "CompanyA");
-        CustomerDao customer3 = createCustomerDao("Adam", "Smith", 1, "CompanyA");
-        CustomerDao customer4 = createCustomerDao("John", "Smith", 1, "CompanyA");
+        companyRepository.deleteAll();
 
-        CustomerDao customer5 = createCustomerDao("Adam", "Doe", 2, "CompanyB");
-        CustomerDao customer6 = createCustomerDao("Edison", "Smith", 2, "CompanyB");
+        CompanyMapper companyMapper = Mappers.getMapper(CompanyMapper.class);
+        List<CompanyDao> companyDaos = createCompanyData();
+        CompanyDao company1 = companyDaos.get(0);
+        CompanyDao company2 = companyDaos.get(1);
+
+        CustomerDao customer1 = createCustomerDao("Adam", "Doe", company1);
+        CustomerDao customer2 = createCustomerDao("John", "Doe", company1);
+        CustomerDao customer3 = createCustomerDao("Adam", "Smith", company1);
+        CustomerDao customer4 = createCustomerDao("John", "Smith", company1);
+
+        CustomerDao customer5 = createCustomerDao("Adam", "Doe", company2);
+        CustomerDao customer6 = createCustomerDao("Edison", "Smith", company2);
 
         List<CustomerDao> customers = List.of(customer1, customer2, customer3, customer4, customer5, customer6);
 
@@ -52,13 +68,16 @@ class CustomerSearchControllerIT {
 
     @Test
     void testSearchCustomersByCompanyId_SortedByFirstName_Ascending_Return200() throws Exception {
-        List<CustomerDao> customerDaos = customerRepository.findByCompanyId(1, Sort.by(Sort.Direction.ASC, "lastName"));
+
+        int companyId = companyRepository.findAll().get(0).getId();
+
+        List<CustomerDao> customerDaos = customerRepository.findByCompanyId(companyId, Sort.by(Sort.Direction.ASC, "lastName"));
 
         List<Customer> customerDtos = customerMapper.toDtos(customerDaos);
         String jsonStr = toJsonString(customerDtos);
 
-        mockMvc.perform(get("/customers/searchByCompanyId")
-                        .param("companyId", "1")
+        mockMvc.perform(get("/customers/search/searchByCompanyId")
+                        .param("companyId", String.valueOf(companyId))
                         .param("sortField", "firstName")
                         .param("sortDirection", "asc")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -68,13 +87,13 @@ class CustomerSearchControllerIT {
 
     @Test
     void testSearchCustomersByCompanyId_SortedByFirstName_NotFound_Return404() throws Exception {
-        int customerId = 10;
-        List<CustomerDao> customerDaos = customerRepository.findByCompanyId(customerId, Sort.by(Sort.Direction.ASC, "lastName"));
+        int companyId = Integer.MAX_VALUE;
+        List<CustomerDao> customerDaos = customerRepository.findByCompanyId(companyId, Sort.by(Sort.Direction.ASC, "lastName"));
 
         List<Customer> customerDtos = customerMapper.toDtos(customerDaos);
 
-        mockMvc.perform(get("/customers/searchByCompanyId")
-                        .param("companyId", String.valueOf(customerId))
+        mockMvc.perform(get("/customers/search/searchByCompanyId")
+                        .param("companyId", String.valueOf(companyId))
                         .param("sortField", "firstName")
                         .param("sortDirection", "asc")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -91,7 +110,7 @@ class CustomerSearchControllerIT {
         String jsonStr = toJsonString(customerDtos);
 
 
-        mockMvc.perform(get("/customers/searchByFirstName")
+        mockMvc.perform(get("/customers/search/searchByFirstName")
                         .param("firstName", firstName)
                         .param("sortField", "lastName")
                         .param("sortDirection", "desc")
@@ -110,7 +129,7 @@ class CustomerSearchControllerIT {
         String jsonStr = toJsonString(customerDtos);
 
 
-        mockMvc.perform(get("/customers/searchByLastName")
+        mockMvc.perform(get("/customers/search/searchByLastName")
                         .param("lastName", lastName)
                         .param("sortField", "firstName")
                         .param("sortDirection", "desc")
@@ -119,27 +138,27 @@ class CustomerSearchControllerIT {
                 .andExpect(content().json(jsonStr));
     }
 
-    void testSearchCustomersByCompany_SortedByFirstName_Descending() throws Exception {
-        mockMvc.perform(get("/api/customers/searchByCompanyId")
-                        .param("companyName", "CompanyA")
-                        .param("sortField", "firstName")
-                        .param("sortDirection", "desc")
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk())
-                .andExpect(content().json("[{'firstName':'John'},{'firstName':'Jane'}]"));
-    }
-
-    private static CustomerDao createCustomerDao(String firstName, String lastName, Integer companyId, String companyName) {
+    private static CustomerDao createCustomerDao(String firstName, String lastName, CompanyDao companyDao) {
         return CustomerDao.builder()
                 .firstName(firstName)
                 .lastName(lastName)
-                .companyName(companyName)
-                .companyId(companyId)
+                .company(companyDao)
                 .build();
     }
 
     private String toJsonString(List<Customer> customers) {
         Gson gson = new Gson();
         return gson.toJson(customers);
+    }
+
+    private List<CompanyDao> createCompanyData() {
+        Faker faker = new Faker();
+        List<CompanyDao> companyDaos = new ArrayList<>();
+        for (int j = 0; j < 8; j++) {
+            companyDaos.add(CompanyDao.builder()
+                    .name(faker.company().name())
+                    .build());
+        }
+        return companyRepository.saveAll(companyDaos);
     }
 }
