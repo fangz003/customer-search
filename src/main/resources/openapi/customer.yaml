@@ -21,10 +21,11 @@ paths:
           description: No companies are found.
         '503':
           description: Unexpected error.
-  /customers/listAllCustomers:
+
+  /customers/search/listAll:
     get:
       summary: List all customers
-      operationId: listCustomers
+      operationId: listAllCustomers
       responses:
         '200':
           description: A list of customers
@@ -34,6 +35,11 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Customer'
+        '404':
+          description: No customers are found.
+        '503':
+          description: Unexpected error.
+
   /customers/search/searchByFirstName:
     get:
       summary: Search customers by first name

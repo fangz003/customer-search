@@ -60,8 +60,10 @@ public class CustomerSearchController {
         return customers;
     }
 
-    @GetMapping
-    public List<Customer> getAllCustomers() {
+    @GetMapping("/listAll")
+    @ResponseBody
+
+    public List<Customer> listAllCustomers() {
         return customerSearchService.listAll();
     }
 }

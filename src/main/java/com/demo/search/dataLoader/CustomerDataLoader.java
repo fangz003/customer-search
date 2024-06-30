@@ -42,7 +42,7 @@ public class CustomerDataLoader implements CommandLineRunner {
         createCustomerData(faker, companyDaosPersisted);
 
         final var size = customerRepository.count();
-        logger.info(String.format("{0} customers have been loaded to customer table", size));
+        logger.info(String.format("%d customers have been loaded to customer table", size));
     }
 
     private List<CompanyDao> createCompanyData(Faker faker) {
@@ -65,10 +65,10 @@ public class CustomerDataLoader implements CommandLineRunner {
         Random random = new Random();
 
         while (i < DATA_SET_SiZE) {
-            if (i % 10 == 0) {
+            if (i % 3 == 0) {
                 firstName = faker.name().firstName();
             }
-            if (i % 20 == 0) {
+            if (i % 5 == 0) {
                 lastName = faker.name().lastName();
             }
             int randomIndex = random.nextInt(companyDaosPersisted.size());

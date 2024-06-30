@@ -4,7 +4,6 @@ import com.demo.search.dao.CompanyDao;
 import com.demo.search.dao.CustomerDao;
 import com.demo.search.mapper.CompanyMapper;
 import com.demo.search.mapper.CustomerMapper;
-import com.demo.search.mapper.CustomerMapperImpl;
 import com.demo.search.model.Customer;
 import com.demo.search.repository.CompanyRepository;
 import com.demo.search.repository.CustomerRepository;
@@ -104,7 +103,7 @@ class CustomerSearchControllerIT {
     void testSearchCustomersByFirstName_SortedByLastName_Descending_Return200() throws Exception {
         String firstName = "John";
 
-        List<CustomerDao> customerDaos = customerRepository.findByFirstName(firstName, Sort.by(Sort.Direction.DESC, "lastName"));
+        List<CustomerDao> customerDaos = customerRepository.findByFirstNameStartsWithIgnoreCase(firstName, Sort.by(Sort.Direction.DESC, "lastName"));
 
         List<Customer> customerDtos = customerMapper.toDtos(customerDaos);
         String jsonStr = toJsonString(customerDtos);
@@ -123,7 +122,7 @@ class CustomerSearchControllerIT {
     void testSearchCustomersByLastName_SortedByFirstName_Descending_Return200() throws Exception {
         String lastName = "Smith";
 
-        List<CustomerDao> customerDaos = customerRepository.findByLastName(lastName, Sort.by(Sort.Direction.DESC, "firstName"));
+        List<CustomerDao> customerDaos = customerRepository.findByLastNameStartsWithIgnoreCase(lastName, Sort.by(Sort.Direction.DESC, "firstName"));
 
         List<Customer> customerDtos = customerMapper.toDtos(customerDaos);
         String jsonStr = toJsonString(customerDtos);

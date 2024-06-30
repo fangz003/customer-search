@@ -15,9 +15,9 @@ import java.util.List;
 @Repository
 public interface CustomerRepository extends JpaRepository<CustomerDao, Long> {
 
-    List<CustomerDao> findByFirstName(String firstName, Sort sort);
+    List<CustomerDao> findByFirstNameStartsWithIgnoreCase(String firstName, Sort sort);
 
-    List<CustomerDao> findByLastName(String lastName, Sort sort);
+    List<CustomerDao> findByLastNameStartsWithIgnoreCase(String lastName, Sort sort);
 
     List<CustomerDao> findByCompanyId(Integer companyId, Sort sort);
 }

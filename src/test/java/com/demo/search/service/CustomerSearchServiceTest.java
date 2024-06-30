@@ -59,7 +59,7 @@ public class CustomerSearchServiceTest {
 
         final var fistName = "John";
         // given
-        given(customerRepository.findByFirstName(anyString(), any(Sort.class))).willReturn(List.of(customers.get(0)));
+        given(customerRepository.findByFirstNameStartsWithIgnoreCase(anyString(), any(Sort.class))).willReturn(List.of(customers.get(0)));
 
         // when
         List<Customer> result = customerSearchService.findByFirstName(anyString(), anyString(), "asc");
@@ -76,7 +76,7 @@ public class CustomerSearchServiceTest {
         // given
         List<CustomerDao> customerDaos = customers.subList(1,2);
 
-        given(customerRepository.findByLastName(anyString(), any(Sort.class))).willReturn(customerDaos);
+        given(customerRepository.findByLastNameStartsWithIgnoreCase(anyString(), any(Sort.class))).willReturn(customerDaos);
 
         // when
         List<Customer> result = customerSearchService.findByLastName(anyString(), anyString(), "asc");

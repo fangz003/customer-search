@@ -7,7 +7,9 @@ const CustomerSearch = () => {
   const [customers, setCustomers] = useState([]);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
   const [companies, setCompanies] = useState([]);
+  const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [companyId, setCompanyId] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [validationMessage, setValidationMessage] = useState("");
@@ -15,12 +17,77 @@ const CustomerSearch = () => {
   const [sortDirection, setsortDirection] = useState("asc"); // asc or desc
 
   useEffect(() => {
-    fetchCompanies()
-      .then((data) => setCompanies(data))
-      .catch((error) => console.error("Error fetching companies:", error));
+    const fetchData = async () => {
+      try {
+        const companiesResponse = await fetchCompanies();
+        setCompanies(companiesResponse);
+
+        const customersResponse = await fetchCustomers();
+        setCustomers(customersResponse);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        setError("Error fetching data");
+      }
+    };
+
+    fetchData();
   }, []);
 
-  const handleSearch = () => {
+  const fetchCustomers = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/demo/customers/search/listAll"
+      );
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+      return await response.json();
+    } catch (error) {
+      setError("Error fetching data");
+      setCustomers([]);
+      setFilteredCustomers([]);
+    }
+  };
+
+  const filterCustomersByFirstName = (term) => {
+    const filtered = customers.filter(
+      (customer) =>
+        customer.firstName.toLowerCase().startsWith(term.toLowerCase()) ||
+        customer.firstName.toLowerCase().startsWith(term.toLowerCase())
+    );
+    setFilteredCustomers(filtered);
+    setSearchResults(filtered);
+  };
+
+  const filterCustomersByLastName = (term) => {
+    const filtered = customers.filter(
+      (customer) =>
+        customer.lastName.toLowerCase().startsWith(term.toLowerCase()) ||
+        customer.lastName.toLowerCase().startsWith(term.toLowerCase())
+    );
+    setFilteredCustomers(filtered);
+    setSearchResults(filtered);
+  };
+
+  const handleSearchOnChange = (e) => {
+    const term = e.target.value;
+    const inputName = e.target.name;
+    // Reset validation message
+    setValidationMessage("");
+
+    setSearchTerm(term);
+    if (inputName === "firstName") {
+      setFirstName(term);
+      setLastName("");
+      filterCustomersByFirstName(term);
+    } else if (inputName === "lastName") {
+      setLastName(term);
+      setFirstName("");
+      filterCustomersByLastName(term);
+    }
+  };
+
+  const handleSearchOnSubmit = () => {
     // Reset validation message
     setValidationMessage("");
 
@@ -71,7 +138,7 @@ const CustomerSearch = () => {
       sortField === field && sortDirection === "asc" ? "desc" : "asc";
     setSortField(field);
     setsortDirection(newsortDirection);
-    handleSearch(); // Re-fetch data with the new sorting
+    handleSearchOnSubmit(); // Re-fetch data with the new sorting
   };
 
   return (
@@ -81,9 +148,12 @@ const CustomerSearch = () => {
           First Name:
           <input
             type="text"
-            className="form-control mx-3"
+            name="firstName"
+            className="form-control"
+            id="searchTerm"
             value={firstName}
-            onChange={(e) => setFirstName(e.target.value)}
+            onChange={handleSearchOnChange}
+            placeholder="Search by first name"
           />
         </label>
 
@@ -91,9 +161,11 @@ const CustomerSearch = () => {
           Last Name:
           <input
             type="text"
-            className="form-control mx-3"
+            name="lastName"
+            className="form-control"
             value={lastName}
-            onChange={(e) => setLastName(e.target.value)}
+            onChange={handleSearchOnChange}
+            placeholder="Search by last name"
           />
         </label>
 
@@ -114,7 +186,7 @@ const CustomerSearch = () => {
         </label>
       </div>
       <br></br>
-      <button className="btn btn-primary" onClick={handleSearch}>
+      <button className="btn btn-primary" onClick={handleSearchOnSubmit}>
         Search
       </button>
 

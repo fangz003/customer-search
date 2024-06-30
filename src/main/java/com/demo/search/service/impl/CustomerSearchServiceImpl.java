@@ -29,7 +29,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
      */
     public List<Customer> findByFirstName(final String firstName, final String sortField, final String sortDirection) {
         Sort sort = getSort(sortField, sortDirection);
-        List<CustomerDao> customerDaos = customerRepository.findByFirstName(firstName, sort);
+        List<CustomerDao> customerDaos = customerRepository.findByFirstNameStartsWithIgnoreCase(firstName, sort);
         return customerMapper.toDtos(customerDaos);
     }
 
@@ -43,7 +43,7 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
      */
     public List<Customer> findByLastName(final String lastName, final String sortField, final String sortDirection) {
         Sort sort = getSort(sortField, sortDirection);
-        List<CustomerDao> customerDaos = customerRepository.findByLastName(lastName, sort);
+        List<CustomerDao> customerDaos = customerRepository.findByLastNameStartsWithIgnoreCase(lastName, sort);
         return customerMapper.toDtos(customerDaos);
     }
 

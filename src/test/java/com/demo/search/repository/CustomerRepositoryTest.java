@@ -107,7 +107,7 @@ public class CustomerRepositoryTest {
     @Test
     void testFindByFirstName_SortedByLastName_Descending() {
         // when
-        List<CustomerDao> result = customerRepository.findByFirstName("John", Sort.by(Sort.Direction.DESC, "lastName"));
+        List<CustomerDao> result = customerRepository.findByFirstNameStartsWithIgnoreCase("John", Sort.by(Sort.Direction.DESC, "lastName"));
 
         // then
         assertEquals(2, result.size());
@@ -118,7 +118,7 @@ public class CustomerRepositoryTest {
     @Test
     void testFindByFirstName_SortedByLastName_Ascending() {
         // when
-        List<CustomerDao> result = customerRepository.findByFirstName("John", Sort.by(Sort.Direction.ASC, "lastName"));
+        List<CustomerDao> result = customerRepository.findByFirstNameStartsWithIgnoreCase("John", Sort.by(Sort.Direction.ASC, "lastName"));
 
         // then
         assertEquals(2, result.size());
@@ -129,7 +129,7 @@ public class CustomerRepositoryTest {
     @Test
     void testFindByLastName_SortedByFirstName_Ascending() {
         // when
-        List<CustomerDao> result = customerRepository.findByLastName("Smith", Sort.by(Sort.Direction.ASC, "lastName"));
+        List<CustomerDao> result = customerRepository.findByLastNameStartsWithIgnoreCase("Smith", Sort.by(Sort.Direction.ASC, "lastName"));
 
         // then
         assertEquals(3, result.size());
@@ -140,7 +140,7 @@ public class CustomerRepositoryTest {
     @Test
     void testFindByLastName_SortedByFirstName_Descending() {
         // when
-        List<CustomerDao> result = customerRepository.findByLastName("Smith", Sort.by(Sort.Direction.DESC, "lastName"));
+        List<CustomerDao> result = customerRepository.findByLastNameStartsWithIgnoreCase("Smith", Sort.by(Sort.Direction.DESC, "lastName"));
 
         // then
         assertEquals(3, result.size());
