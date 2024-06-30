@@ -11,4 +11,7 @@ public interface CustomerSearchService {
     List<Customer> findByLastName(final String firstName, String sortField, String sortDirection);
 
     List<Customer> findByCompanyId(final Integer companyId, String sortField, String sortDirection);
+
+    List<Customer> listAll();
+
 }

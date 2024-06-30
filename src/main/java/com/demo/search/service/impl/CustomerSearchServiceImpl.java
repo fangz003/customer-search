@@ -61,6 +61,10 @@ public class CustomerSearchServiceImpl implements CustomerSearchService {
         return customerMapper.toDtos(customerDaos);
     }
 
+    public List<Customer> listAll(){
+        return customerMapper.toDtos(customerRepository.findAll());
+    }
+
     private Sort getSort(String sortField, String sortDirection) {
         if (StringUtils.isEmpty(sortField)) {
             return Sort.unsorted();

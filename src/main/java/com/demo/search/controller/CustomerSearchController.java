@@ -60,13 +60,8 @@ public class CustomerSearchController {
         return customers;
     }
 
-    /*@GetMapping("/companies")
-    public List<Compa> getCompanies() {
-        return customerService.getAllCompanies();
-    }*/
-
-    /*@GetMapping
+    @GetMapping
     public List<Customer> getAllCustomers() {
-        return customerSearchService.getAllCustomers();
-    }*/
+        return customerSearchService.listAll();
+    }
 }

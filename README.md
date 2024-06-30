@@ -1,8 +1,8 @@
 # Customer Search Application
 
-This project is a Spring Boot application that provides a RESTful API for searching customers by their first name. It
-uses PostgreSQL as the database and is containerized using Docker.
-The frontend is built with React to provide a user interface for searching customers.
+The backend of this project is a Spring Boot application that provides a Restful API for searching customers by their first name, last name or company.
+It uses PostgreSQL as the database and is containerized using Docker.
+The frontend is built with React + Vite to provide a user interface for searching customers.
 
 ### Table of Content
 
@@ -14,7 +14,8 @@ The frontend is built with React to provide a user interface for searching custo
 * [Run the application](#Run-The-Application)
 * [Usage](#Usage)
 * [Built With](#Built-With)
-
+* [Running the Frontend](#Running-the-Frontend)
+* 
 ## Features
 
 - Customer search by firstName, lastName, and companyName.
@@ -202,3 +203,11 @@ depends_on: posgres-db
 volumes:
 postgres-data:
 ```
+
+## Running the Frontend
+```
+cd frontend/public
+npm run dev
+```
+Running the Application
+In a browser, navigate to http://localhost:5173 
