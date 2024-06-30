@@ -15,7 +15,7 @@ The frontend is built with React + Vite to provide a user interface for searchin
 * [Usage](#Usage)
 * [Built With](#Built-With)
 * [Running the Frontend](#Running-the-Frontend)
-* 
+* [Communication Flow](#Communication-Flow)
 ## Features
 
 - Customer search by firstName, lastName, and companyName.
@@ -211,3 +211,11 @@ npm run dev
 ```
 Running the Application
 In a browser, navigate to http://localhost:5173 
+
+## Communication Flow
+- User Interaction: The user interacts with the React frontend by entering a first name in the search form and submitting it.
+- Frontend Request: The React component makes an HTTP GET request to the Spring Boot backend API endpoint.
+- Backend Processing: The Spring Boot controller handles the request, invokes the service layer for business logic, and interacts with the repository to fetch data from the PostgreSQL database.
+- Database Query: The repository executes a query to find customers matching the search criteria.
+- Response: The backend returns the search results to the frontend in JSON format.
+- Display Results: The React component receives the response and updates the UI to display the list of customers.
