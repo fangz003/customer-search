@@ -1,6 +1,7 @@
 target/
 logs/
 htmlReport
+node_modules
 
 
 !.mvn/
