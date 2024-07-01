@@ -1,10 +1,11 @@
-# Customer Search Application
+# Customer Search 
 
+The customer search application is built by React and Microservices.
 The backend of this project is a Spring Boot application that provides a Restful API for searching customers by their first name, last name or company.
 It uses PostgreSQL as the database and is containerized using Docker.
-The frontend is built with React + Vite to provide a user interface for searching customers.
+The frontend is built with React + Vite to provide a user interface for searching customers. Frontend README is [here](frontend%2FREADME.MD) 
 
-### Table of Content
+## Table of Content
 
 * [Prerequisites](#Prerequisites)
 * [Features](#Features)
@@ -16,6 +17,7 @@ The frontend is built with React + Vite to provide a user interface for searchin
 * [Built With](#Built-With)
 * [Running the Frontend](#Running-the-Frontend)
 * [Communication Flow](#Communication-Flow)
+
 ## Features
 
 - Customer search by firstName, lastName, and companyName.
@@ -203,14 +205,6 @@ depends_on: posgres-db
 volumes:
 postgres-data:
 ```
-
-## Running the Frontend
-```
-cd frontend/public
-npm run dev
-```
-Running the Application
-In a browser, navigate to http://localhost:5173 
 
 ## Communication Flow
 - User Interaction: The user interacts with the React frontend by entering a first name in the search form and submitting it.
