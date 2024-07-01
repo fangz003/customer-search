@@ -1,16 +1,16 @@
 import React from "react";
 import CustomerSearch from "./components/CustomerSearch";
-import "bootstrap/dist/css/bootstrap.css";
+import ReactDOM from "react-dom";
+import { Route, Routes } from "react-router-dom";
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <h3 className="text-center"> Customer Search</h3>
-      </header>
-      <CustomerSearch />
+    <div>
+      <Routes>
+        <Route path="/" element={<CustomerSearch />} />
+        <Route path="/demo/*" element={<CustomerSearch />} />
+      </Routes>
     </div>
   );
-}
-
+};
 export default App;

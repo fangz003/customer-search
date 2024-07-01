@@ -2,6 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import { fetchCompanies } from "../services/Company";
+import {
+  searchAllCustomers,
+  searchCustomersByFirstName,
+  searchCustomersByLastName,
+  searchCustomersByCompanyId,
+} from "../services/Customers";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const CustomerSearch = () => {
   const [customers, setCustomers] = useState([]);
@@ -9,12 +16,13 @@ const CustomerSearch = () => {
   const [lastName, setLastName] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [companies, setCompanies] = useState([]);
-  const [filteredCustomers, setFilteredCustomers] = useState([]);
   const [companyId, setCompanyId] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [validationMessage, setValidationMessage] = useState("");
   const [sortField, setSortField] = useState("firstName");
   const [sortDirection, setsortDirection] = useState("asc"); // asc or desc
+  const navigate = useNavigate();
+  const baseUrl = "http://localhost:5173/demo/customerSearch/";
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,8 +30,9 @@ const CustomerSearch = () => {
         const companiesResponse = await fetchCompanies();
         setCompanies(companiesResponse);
 
-        const customersResponse = await fetchCustomers();
+        const customersResponse = await searchAllCustomers();
         setCustomers(customersResponse);
+        setSearchResults(customersResponse);
       } catch (error) {
         console.error("Error fetching data:", error);
         setError("Error fetching data");
@@ -45,7 +54,6 @@ const CustomerSearch = () => {
     } catch (error) {
       setError("Error fetching data");
       setCustomers([]);
-      setFilteredCustomers([]);
     }
   };
 
@@ -55,7 +63,13 @@ const CustomerSearch = () => {
         customer.firstName.toLowerCase().startsWith(term.toLowerCase()) ||
         customer.firstName.toLowerCase().startsWith(term.toLowerCase())
     );
-    setFilteredCustomers(filtered);
+    setSearchResults(filtered);
+  };
+
+  const filterCustomersByCompanyId = (term) => {
+    const filtered = customers.filter(
+      (customer) => customer.company.id === Number(term)
+    );
     setSearchResults(filtered);
   };
 
@@ -65,7 +79,6 @@ const CustomerSearch = () => {
         customer.lastName.toLowerCase().startsWith(term.toLowerCase()) ||
         customer.lastName.toLowerCase().startsWith(term.toLowerCase())
     );
-    setFilteredCustomers(filtered);
     setSearchResults(filtered);
   };
 
@@ -84,9 +97,14 @@ const CustomerSearch = () => {
       setLastName(term);
       setFirstName("");
       filterCustomersByLastName(term);
+    } else if (inputName === "companyId") {
+      setFirstName("");
+      setLastName("");
+      setCompanyId(term);
+      filterCustomersByCompanyId(term);
     }
   };
-
+  //This is invoked by the submit button
   const handleSearchOnSubmit = () => {
     // Reset validation message
     setValidationMessage("");
@@ -96,12 +114,16 @@ const CustomerSearch = () => {
       setValidationMessage("Please provide a valid search criteria");
       return;
     }
+
     if (firstName) {
       const params = new URLSearchParams({
         firstName,
         sortField,
         sortDirection,
       });
+
+      navigate(`demo/customers/search/searchByFirstName?${params.toString()}`);
+
       // Perform the search based on the input values
       searchCustomersByFirstName(params)
         .then((data) => setSearchResults(data))
@@ -114,6 +136,9 @@ const CustomerSearch = () => {
         sortField,
         sortDirection,
       });
+
+      navigate(`demo/customers/search/searchByLastName?${params.toString()}`);
+
       searchCustomersByLastName(params)
         .then((data) => setSearchResults(data))
         .catch((error) =>
@@ -125,6 +150,9 @@ const CustomerSearch = () => {
         sortField,
         sortDirection,
       });
+
+      navigate(`demo/customers/search/searchByCustomerId?${params.toString()}`);
+
       searchCustomersByCompanyId(params)
         .then((data) => setSearchResults(data))
         .catch((error) =>
@@ -173,8 +201,9 @@ const CustomerSearch = () => {
           Company ID:
           <select
             className="form-control"
+            name="companyId"
             value={companyId}
-            onChange={(e) => setCompanyId(e.target.value)}
+            onChange={handleSearchOnChange}
           >
             <option value="">Select Company ID</option>
             {companies.map((company) => (
@@ -258,53 +287,5 @@ const CustomerSearch = () => {
     </div>
   );
 };
-
-function searchCustomersByFirstName(params) {
-  return fetch(
-    `http://localhost:8080/demo/customers/search/searchByFirstName?${params.toString()}`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      return response.json(); // assuming the response is JSON
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error; // rethrow so caller can handle it
-    });
-}
-
-function searchCustomersByLastName(params) {
-  return fetch(
-    `http://localhost:8080/demo/customers/search/searchByLastName?${params.toString()}`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      return response.json(); // assuming the response is JSON
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error; // rethrow so caller can handle it
-    });
-}
-
-function searchCustomersByCompanyId(params) {
-  return fetch(
-    `http://localhost:8080/demo/customers/search/searchByCompanyId?${params.toString()}`
-  )
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok " + response.statusText);
-      }
-      return response.json(); // assuming the response is JSON
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      throw error; // rethrow so caller can handle it
-    });
-}
 
 export default CustomerSearch;
